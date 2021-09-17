@@ -14,23 +14,23 @@
                   <span class="icon-bar"></span>
                   <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/"> Watchlist </a>
+               
             </div>
             <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a href="/">Home</a></li>
+                <ul class="nav navbar-nav display-6 " >
+                    <li><a class="text-decoration-none" href="/">Home</a></li>
                 </ul>
            
 
-                <ul class="nav navbar-nav navbar-right">
+                <ul class="nav navbar-nav navbar-right d-inline display-6 text-decoration-none">
                  
                   {% if current_user.is_authenticated %}
-                  <li><a href="#">{{current_user.username}}</a></li>
-                  <li><a href="{{url_for('main.profile',uname = current_user.username)}}">Profile</a></li>
-                  <li><a href="{{url_for('auth.logout')}}">Sign out</a></li>
+                  <li><a class="text-decoration-none" href="#">{{current_user.username}}</a></li>
+                  <li><a class="text-decoration-none" href="{{url_for('main.profile',uname = current_user.username)}}">Profile</a></li>
+                  <li><a class="text-decoration-none" href="{{url_for('auth.logout')}}">Sign out</a></li>
                   {% else %}
-                  <li><a href="#">Guest</a></li>
-                  <li><a href="{{url_for('auth.login')}}">Sign in</a></li>
+                  <li><a class="text-decoration-none" href="#">Guest</a></li>
+                  <li><a class="text-decoration-none" href="{{url_for('auth.login')}}">Sign in</a></li>
                   {%endif%}
                 </ul>
             </div>
