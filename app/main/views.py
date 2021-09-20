@@ -1,62 +1,60 @@
 from flask import render_template,request,redirect,url_for,abort
 from . import main
-from flask_login import login_required,current_user
-from .. import db,photos
-import markdown2
-from .forms import  UpdateProfile,PitchForm,CommentForm
 from ..models import User,Pitch,Comment
-
+from .. import db,photos
+from .forms import UpdateProfile,PitchForm,CommentForm
+from flask_login import login_required,current_user
+import datetime
 
 # Views
 @main.route('/')
-@login_required
 def index():
+
     '''
     View root page function that returns the index page and its data
     '''
-    # Getting popular movie
-    return render_template('index.html')
+
+    title = 'Home - Welcome to Perfect Pitch'
+
+    # Getting reviews by category
+    interview_piches = Pitch.get_pitches('interview')
+    product_piches = Pitch.get_pitches('product')
+    promotion_pitches = Pitch.get_pitches('promotion')
 
 
-    
-@main.route('/pitch')
-def pitches():
-
-  pitches = Pitch.query.all()
-  brand = Pitch.query.filter_by(category='Brand').all()
-  product = Pitch.query.filter_by(category='Product').all()
-  project = Pitch.query.filter_by(category='Project').all()
-  investor = Pitch.query.filter_by(category='Investor').all()
-  return render_template('pitch.html',pitches=pitches,brand=brand,product=product,project=project,investor=investor)
-
-
+    return render_template('index.html',title = title, interview = interview_piches, product = product_piches, promotion = promotion_pitches)
 
 @main.route('/user/<uname>')
-@login_required
 def profile(uname):
     user = User.query.filter_by(username = uname).first()
+    pitches_count = Pitch.count_pitches(uname)
+    user_joined = user.date_joined.strftime('%b %d, %Y')
+
     if user is None:
         abort(404)
-    return render_template("profile/profile.html", user = user)
 
-
+    return render_template("profile/profile.html", user = user,pitches = pitches_count,date = user_joined)
 
 @main.route('/user/<uname>/update',methods = ['GET','POST'])
+@login_required
 def update_profile(uname):
     user = User.query.filter_by(username = uname).first()
     if user is None:
         abort(404)
+
     form = UpdateProfile()
+
     if form.validate_on_submit():
         user.bio = form.bio.data
+
         db.session.add(user)
         db.session.commit()
-        return redirect(url_for('.profile',uname = user.username))
+
+        return redirect(url_for('.profile',uname=user.username))
+
     return render_template('profile/update.html',form = form)
 
-
-
-@main.route('/user/<uname>/update/pic',methods = ['POST'])
+@main.route('/user/<uname>/update/pic',methods= ['POST'])
 @login_required
 def update_pic(uname):
     user = User.query.filter_by(username = uname).first()
@@ -65,39 +63,73 @@ def update_pic(uname):
         path = f'photos/{filename}'
         user.profile_pic_path = path
         db.session.commit()
-    return redirect(url_for('main.profile',uname = uname))
+    return redirect(url_for('main.profile',uname=uname))
 
-
-
-@main.route('/pitch/new',methods = ['GET','POST'])
+@main.route('/pitch/new', methods = ['GET','POST'])
 @login_required
 def new_pitch():
-  form = PitchForm()
-  if form.validate_on_submit():
-    title=form.title.data
-    category = form.category.data
-    pitch = form.pitch.data
-    author = current_user
-    new_pitch = Pitch(title=title,category=category,pitch=pitch,author=current_user._get_current_object().id)
-    db.session.add(new_pitch)
-    db.session.commit()
-    return redirect(url_for('main.pitches',id=new_pitch.id))
-  return render_template('create_pitch.html',title='Add Your Pitch',pitch_form=form)
+    pitch_form = PitchForm()
+    if pitch_form.validate_on_submit():
+        title = pitch_form.title.data
+        pitch = pitch_form.text.data
+        category = pitch_form.category.data
 
+        # Updated pitch instance
+        new_pitch = Pitch(pitch_title=title,pitch_content=pitch,category=category,user=current_user,likes=0,dislikes=0)
+
+        # Save pitch method
+        new_pitch.save_pitch()
+        return redirect(url_for('.index'))
+
+    title = 'New pitch'
+    return render_template('new_pitch.html',title = title,pitch_form=pitch_form )
+
+@main.route('/pitches/motivation_pitches')
+def interview_pitches():
+
+    pitches = Pitch.get_pitches('motivation')
+
+    return render_template("motivation_pitches.html", pitches = pitches)
+
+@main.route('/pitches/love_pitches')
+def product_pitches():
+
+    pitches = Pitch.get_pitches('love')
+
+    return render_template("love_pitches.html", pitches = pitches)
+
+@main.route('/pitches/promotion_pitches')
+def promotion_pitches():
+
+    pitches = Pitch.get_pitches('wisdom')
+
+    return render_template("wisdom_pitches.html", pitches = pitches)
+
+@main.route('/pitch/<int:id>', methods = ['GET','POST'])
+def pitch(id):
+    pitch = Pitch.get_pitch(id)
+    posted_date = pitch.posted.strftime('%b %d, %Y')
 
   
-@main.route('/comments/<int:id>',methods=['GET','POST'])
-def comment_review(id):
-  comment = CommentForm()
-  pitch=Pitch.query.get(id)
-  if comment.validate_on_submit():
-    content = comment.comment.data
-    new_post = Comment(comment=content,title=pitch.id)
-    db.session.add(new_post)
-    db.session.commit()
-  post = 'Post Your Comment'
-  user=User.query.get(id)
-  comments = Comment.query.filter_by(title=pitch.id).all()
-  if pitch is None:
-    abort(404)
-  return render_template('comments.html',comment_form=comment,post=post,comments=comments,pitch=pitch,user=user)
+
+    comment_form = CommentForm()
+    if comment_form.validate_on_submit():
+        comment = comment_form.text.data
+
+        new_comment = Comment(comment = comment,user = current_user,pitch_id = pitch)
+
+        new_comment.save_comment()
+
+
+    comments = Comment.get_comments(pitch)
+
+    return render_template("pitch.html", pitch = pitch, comment_form = comment_form, comments = comments, date = posted_date)
+
+@main.route('/user/<uname>/pitches')
+def user_pitches(uname):
+    user = User.query.filter_by(username=uname).first()
+    pitches = Pitch.query.filter_by(user_id = user.id).all()
+    pitches_count = Pitch.count_pitches(uname)
+    user_joined = user.date_joined.strftime('%b %d, %Y')
+
+    return render_template("profile/pitches.html", user=user,pitches=pitches,pitches_count=pitches_count,date = user_joined)
