@@ -29,7 +29,7 @@
 * open the folder using code editor .
 * create a virtual environment and activate it
 * install the rquirements :```pip install -r requirements.txt```
-* using editors terminal run ```./start.sh``` file cloned from github.
+* using editors terminal run ```python3 manage.py server``` file cloned from github.
 
 ## Technologies Used
 
