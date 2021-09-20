@@ -44,7 +44,7 @@ class TestConfig(Config):
     SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://moringa:sicario2793@localhost/pitch_test'
 
    
-
+    pass
 
 
 class DevConfig(Config):
