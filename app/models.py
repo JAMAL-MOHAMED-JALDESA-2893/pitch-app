@@ -55,6 +55,7 @@ class Pitch(db.Model):
   vote_count = db.Column(db.Integer)
   added_date = db.Column(db.DateTime,default=datetime.utcnow)
   author = db.Column(db.Integer,db.ForeignKey('users.id'))
+ 
   def __repr__(self):
     return f'Pitch{self.pitch}'
 

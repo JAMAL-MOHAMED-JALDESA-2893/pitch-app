@@ -1,59 +1,32 @@
-{% extends 'base.html' %}
-{% import 'bootstrap/wtf.html' as wtf %}
-{% block styles %}
-  {{super()}}
-  <link rel="stylesheet" href="{{url_for('static',filename='css/styles.css')}}">
-{% endblock %}
-{% block content %}
-  <div class="container-fluid user-pitches">
-        <div class="row">
-            <h2 id="p-cat" style="text-align: center"> PITCH CATEGORIES </h2>
+{% extends 'base.html'%}
+{% import 'macros.html' as macro%}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{%block styles%}
+
+ {{ super() }}
+<link href="https://fonts.googleapis.com/css?family=Indie+Flower|Ranga" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Acme&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css"
+    integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
+{%endblock%} 
+
+<!-- Content block -->
+{%block content%}
+<div class="container card">
+    <div class="container card-body" style="font-family: 'Indie Flower', cursive;">
+       
+
         </div>
-        <div class="row main">
-        <div class="col-md-2"></div>
-          <div class="col-md-8">
-            <div class="row pitch-section">
-              <h3 class="cats">Personal Brand</h3>
-              {% for pitch in brand %}
-              <div class="card peach-gradient color-block mb-3 mx-auto z-depth-1">
-                <h4 class="card-title">{{pitch.title}}</h4>
-                <p class="card-body">" {{pitch.pitch}}</p>
-                <p class="card-footer"><a href="/comments/{{pitch.id}}"><button class="btn btn-light">Comment</button></a></p>
-              </div>
-              {% endfor %}
-            </div>
-            <div class="row">
-              <h3 class="cats">Product</h3>
-              {% for pitch in product %}
-              <div class="card peach-gradient color-block mb-3 mx-auto z-depth-1">
-                <h4 class="card-title">{{pitch.title}}</h4>
-                <p class="card-body">" {{pitch.pitch}}</p>
-                <p class="card-footer"><a href="/comments/{{pitch.id}}"><button class="btn btn-light">Comment</button></a></p>
-              </div>
-              {% endfor %}
-            </div>
-            <div class="row">
-              <h3 class="cats">Project</h3>
-              {% for pitch in project %}
-              <div class="card peach-gradient color-block mb-3 mx-auto z-depth-1">
-                <h4 class="card-title">{{pitch.title}}</h4>
-                <p class="card-body">" {{pitch.pitch}}</p>
-                <p class="card-footer"><a href="/comments/{{pitch.id}}"><button class="btn btn-light">Comment</button></a></p>
-              </div>
-              {% endfor %}
-            </div>
-            <div class="row">
-              <h3 class="cats">Investor</h3>
-              {% for pitch in investor %}
-              <div class="card peach-gradient color-block mb-3 mx-auto z-depth-1">
-                <h4 class="card-title">{{pitch.title}}</h4>
-                <p class="card-body">" {{pitch.pitch}}</p>
-                <p class="card-footer"><a href="/comments/{{pitch.id}}"><button class="btn btn-light">Comment</button></a></p>
-              </div>
-              {% endfor %}
-            </div>
-          </div>
-          <div class="col-md-2"></div>
+        <br>
+        <div class="row text-center container" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+            <hr>
+            
+            {{ wtf.quick_form(comment_form) }}
+          
+            {{macro.displayComments(comments)}}
         </div>
-  </div>
-{% endblock %}
+
+    </div>
+</div>
+{%endblock%}

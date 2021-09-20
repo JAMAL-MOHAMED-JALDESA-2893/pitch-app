@@ -21,6 +21,7 @@ def index():
     
 @main.route('/pitch')
 def pitches():
+
   pitches = Pitch.query.all()
   brand = Pitch.query.filter_by(category='Brand').all()
   product = Pitch.query.filter_by(category='Product').all()

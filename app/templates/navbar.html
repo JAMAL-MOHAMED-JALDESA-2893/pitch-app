@@ -1,42 +1,30 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title></title>
-  </head>
-  <body>
-    <div class="navbar navbar-inverse" role="navigation">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                  <span class="sr-only">Toggle navigation</span>
-                  <span class="icon-bar"></span>
-                  <span class="icon-bar"></span>
-                  <span class="icon-bar"></span>
-                </button>
-               
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav display-6 " >
-                    <li><a class="text-decoration-none" href="/">Home</a></li>
-                </ul>
-           
 
-                <ul class="nav navbar-nav navbar-right d-inline display-6 text-decoration-none">
-                 
+    <nav class="navbar navbar-expand-lg navbar-light bg-dark" style="color: brown;background-color: rgb(61, 85, 99);">
+      </button>
+      <div class="collapse navbar-collapse" id="navbarText" style="color:rgb(97, 89, 89);">
+        <br>
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+              <a style="color:antiquewhite; font-size: 18px; text-decoration: none ;list-style-type:none " class="nav-link" href="/">Home <span class="sr-only"></span></a>
+            </li>
+                     
+
+              </ul>
+              <ul style="background-color:inherit;border-radius:50px;text-decoration:none;" class="nav navbar-nav navbar-right">
                   {% if current_user.is_authenticated %}
-                  <li><a class="text-decoration-none" href="#">{{current_user.username}}</a></li>
-                  <li><a href="{{ url_for('main.new_pitch') }}">New pitch</a></li>
-                  <li><a class="text-decoration-none" href="{{url_for('main.profile',uname = current_user.username)}}">Profile</a></li>
-                  <li><a class="text-decoration-none" href="{{url_for('auth.logout')}}">Sign out</a></li>
+                  <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                          aria-haspopup="true" aria-expanded="false">{{current_user.username| capitalize}} <span
+                              class="caret"></span></a>
+                      <ul class="dropdown-menu ">
+                          <li><a style="color: blue;" href="{{url_for('main.profile',uname=current_user.username)}}">Profile</a></li>
+                          <hr>
+                          <li><a href="{{url_for('auth.logout')}}">Sign out</a></li>
+                      </ul>
+                  </li>
                   {% else %}
-                  <li><a class="text-decoration-none" href="#">Guest</a></li>
-                  <li><a class="text-decoration-none" href="{{url_for('auth.login')}}">Sign in</a></li>
-                  {%endif%}
-                </ul>
-            </div>
-
-        </div>
-    </div>
-  </body>
-</html>
+                  <li><a href="{{url_for('auth.login')}}"> Sign in</a></li>
+              </ul>
+              {%endif%}
+        
+      </div>
+    </nav>

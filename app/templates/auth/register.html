@@ -1,19 +1,20 @@
 {% extends 'base.html'%}
 {% import 'bootstrap/wtf.html' as wtf%}
-
+{%block styles%}
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/css/bootstrap.min.css" rel="stylesheet"> 
+ 
+{%endblock%}
 {% block content %}
 <div class="container">
-   <h3>{{title}}</h3> 
-<div class="row">
-<div class="col-md-2"> </div>
-<div class="col-md-8">
+    <div class="row" style="margin-top: 50px;">
+        <div class="col-md-2"> </div>
+        <div class="col-md-8" style="background-color:rgb(131, 151, 151)">
 
+            {{wtf.quick_form(registration_form)}}
 
-{{wtf.quick_form(registration_form)}}
-
-</div>
-<div class="col-md-2"></div>
-</div>
+        </div>
+        <div class="col-md-2"></div>
+    </div>
 </div>
 
 {% endblock%}

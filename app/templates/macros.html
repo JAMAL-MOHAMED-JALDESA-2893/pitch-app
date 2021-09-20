@@ -1,31 +1,21 @@
-{% macro displayMovieList(movie_lists) %}
-
-    {% for movie in movie_lists %}
-
-        <div class="col-xs-12 col-sm-4 col-md-2 col-lg-2 movie-card">
-            <img src="{{ movie.poster }}" alt="{{ movie.title }} poster"  title="{{movie.title}}"  class="img-responsive">
-            <li style="padding: 15px;" class="text-center">
-                <a style="color: white;" href="/movie/{{movie.id}}">
-                    {{ movie.title|truncate(15)}}</a>
-            </li>
+{% macro displayPitches(pitches_list)%}
+    {%for pitch in pitches_list%}
+        <div class="col-xs-12 col-sm-3 col-md-4 col-lg-4 review-card">
+            <div class="well well-lg">
+                <h4>{{pitch.pitch_title}}</h4>
+                <p>{{pitch.pitch_content| truncate(100)}}</p>
+                <p>Written by:  {{pitch.user.username}}  </p>
+                <a href="/pitch/{{pitch.id}}" class="btn btn-outline-dark pull-right">comments</a>
+            </div>
         </div>
+    {%endfor%}
+{%endmacro%}
 
-    {% endfor %}
-
-{% endmacro %}
-
-<!-- Displaying reviews macro -->
-{% macro displayReviews(review_list) %}
-
-    {% for review in review_list %}
-    <div class="row">
-        <div class="col-xs-2 col-sm-2 col-md-4 col-lg-4">
-          <h4>Author</h4>
-          <p>{{review.user.username}}</p>
+{%macro displayComments(comments_list)%}
+    {%for comment in comments_list%}
+        <div class="col-md-12">
+            <h5>{{comment.user.username}}</h5>
+            <p>{{comment.comment}}</p>
         </div>
-        <div class="col-xs-10 col-sm-10 col-md-8 col-lg-8">
-          <h2> <a href="{{url_for('main.single_review',id=review.id)}}">{{review.movie_title}}</a> </h2>
-        </div>
-      </div>
-    {% endfor %}
-{% endmacro %}
+    {%endfor%}
+{%endmacro%}
